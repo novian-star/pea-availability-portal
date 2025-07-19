@@ -1,0 +1,21 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+@import '~/assets/css/font.css';
+
+@theme static {
+  --font-sans: 'LINE Seend Sans TH', sans-serif;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    @apply border-default;
+  }
+
+  :root {
+    &.dark {
+      --ui-bg: var(--ui-color-neutral-950);
+    }
+  }
+}

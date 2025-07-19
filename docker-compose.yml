@@ -1,0 +1,34 @@
+services:
+  app:
+    env_file:
+      - .env
+    build:
+      args:
+        NUXT_DATABASE_URL: postgres://postgres:postgres@db:5432/pea_ava_portal
+    container_name: pea-ava-portal-app
+    ports:
+      - '3000:8080'
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: pea-ava-portal-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pea_ava_portal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

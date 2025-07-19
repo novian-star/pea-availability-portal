@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'LINE Seend Sans TH';
+  src: url('~/assets/fonts/LINESeedSansTH_W_Th.woff2') format('woff2');
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: 'LINE Seend Sans TH';
+  src: url('~/assets/fonts/LINESeedSansTH_W_Rg.woff2') format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'LINE Seend Sans TH';
+  src: url('~/assets/fonts/LINESeedSansTH_W_Bd.woff2') format('woff2');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'LINE Seend Sans TH';
+  src: url('~/assets/fonts/LINESeedSansTH_W_XBd.woff2') format('woff2');
+  font-weight: 800;
+}
