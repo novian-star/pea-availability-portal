@@ -1,7 +1,7 @@
-export default defineNuxtRouteMiddleware(async () => {
-  const userSession = useUserSession();
+export default defineNuxtRouteMiddleware(async (to) => {
+	const userSession = useUserSession();
 
-  if (!userSession.loggedIn.value) {
-    return navigateTo('/auth/login', { external: true });
-  }
+	if (!userSession.loggedIn.value && !to.fullPath.startsWith('/login')) {
+		return navigateTo('/login');
+	}
 });
