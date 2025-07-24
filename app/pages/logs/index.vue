@@ -37,6 +37,21 @@ const columns: TableColumn<NonNullable<typeof logs.value>[number]>[] = [
 		header: 'วันที่',
 	},
 ];
+
+async function handleDownload() {
+	const data = await $fetch('/api/logs/export', {
+		responseType: 'blob',
+	});
+	const eleLink = document.createElement('a');
+	eleLink.download = 'logs.csv';
+	eleLink.style.display = 'none';
+	const blob = data as Blob;
+	eleLink.href = URL.createObjectURL(blob);
+	document.body.appendChild(eleLink);
+	eleLink.click();
+	URL.revokeObjectURL(eleLink.href);
+	document.body.removeChild(eleLink);
+}
 </script>
 
 <template>
@@ -44,6 +59,14 @@ const columns: TableColumn<NonNullable<typeof logs.value>[number]>[] = [
 		<header class="flex items-center h-16 px-4 gap-2">
 			<UIcon class="w-5 h-5" name="lucide:logs" />
 			<h1>บันทึกการใช้งาน</h1>
+			<UTooltip text="ดาวน์โหลดบันทึกการใช้งาน">
+				<UButton
+					class="ms-auto"
+					icon="lucide:download"
+					variant="ghost"
+					@click="handleDownload"
+				/>
+			</UTooltip>
 		</header>
 		<main>
 			<div>
