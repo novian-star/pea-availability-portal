@@ -1,0 +1,1 @@
+ALTER TABLE "service" ADD COLUMN "order_index" integer DEFAULT 0 NOT NULL;
