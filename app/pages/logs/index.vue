@@ -23,6 +23,11 @@ const columns: TableColumn<NonNullable<typeof logs.value>[number]>[] = [
 		header: 'สังกัด',
 	},
 	{
+		accessorKey: 'position',
+		accessorFn: (row) => `${row.user?.position}`,
+		header: 'ตำแหน่ง',
+	},
+	{
 		accessorKey: 'action',
 		header: 'กระบวนการ',
 	},
