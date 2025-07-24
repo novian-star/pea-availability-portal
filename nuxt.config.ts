@@ -2,7 +2,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  modules: ['@nuxt/ui', '@nuxt/eslint', 'nuxt-auth-utils'],
+  modules: [
+    '@nuxt/ui',
+    '@nuxt/eslint',
+    'nuxt-auth-utils',
+    '@vueuse/nuxt',
+  ],
 
   future: {
     compatibilityVersion: 4,
