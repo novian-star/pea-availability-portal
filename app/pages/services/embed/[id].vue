@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: false,
+  layout: 'service',
 });
 
 const { id } = useRoute().params as { id: string };
