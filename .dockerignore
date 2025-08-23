@@ -2,3 +2,6 @@
 .nuxt
 .output
 node_modules
+
+# Service account
+service-account.json
