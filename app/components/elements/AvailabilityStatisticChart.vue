@@ -9,8 +9,6 @@ import {
 
 type Statistic = NonNullable<typeof statistics.value>[number];
 
-const colorMode = useColorMode();
-
 const { data: statistics } = await useAsyncData(async () => {
   const requestFetch = useRequestFetch();
 
@@ -34,9 +32,7 @@ const x = (d: Statistic, index: number) => index;
 const y = (d: Statistic) => d.percentage;
 const tickFormat = (tick: number, index: number) =>
   statistics.value?.[index]?.region || '';
-const color = computed(() => {
-  return colorMode.value === 'dark' ? 'white' : 'black';
-});
+const color = '#01cebc';
 const triggers = {
   [GroupedBar.selectors.bar]: (d: Statistic) => `
     <span>${d.region}: ${d.percentage}%</span>
