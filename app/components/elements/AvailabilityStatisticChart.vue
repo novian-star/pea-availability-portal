@@ -32,7 +32,26 @@ const x = (d: Statistic, index: number) => index;
 const y = (d: Statistic) => d.percentage;
 const tickFormat = (tick: number, index: number) =>
   statistics.value?.[index]?.region || '';
-const color = '#01cebc';
+const color = (d: Statistic) => {
+  const colorMode = useColorMode();
+
+  if (d.percentage >= 80) {
+    return {
+      css: 'text-emerald-500 dark:text-emerald-400',
+      hue: colorMode.value === 'dark' ? '#10b981' : '#34d399',
+    }; // Emerald
+  } else if (d.percentage >= 50) {
+    return {
+      css: 'text-orange-500 dark:text-orange-400',
+      hue: colorMode.value === 'dark' ? '#f97316' : '#fb923c',
+    }; // Orange
+  } else {
+    return {
+      css: 'text-red-500 dark:text-red-400',
+      hue: colorMode.value === 'dark' ? '#ef4444' : '#f87171',
+    }; // Red
+  }
+};
 const triggers = {
   [GroupedBar.selectors.bar]: (d: Statistic) => `
     <span>${d.region}: ${d.percentage}%</span>
@@ -42,10 +61,19 @@ const triggers = {
 
 <template>
   <h2 class="font-semibold">AVA Ranking Realtime: FRTU</h2>
+  <div class="grid grid-cols-6 gap-4 text-sm">
+    <div
+      v-for="statistic in statistics"
+      :key="statistic.region"
+      :class="[color(statistic).css, 'font-mono']"
+    >
+      {{ statistic.region }}: {{ Number(statistic.percentage).toFixed(2) }}%
+    </div>
+  </div>
   <template v-if="statistics">
     <VisXYContainer class="max-w-3xl">
       <VisGroupedBar
-        :color="color"
+        :color="(d: Statistic) => color(d).hue"
         :data="statistics"
         :x="x"
         :y="y"
