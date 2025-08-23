@@ -14,7 +14,7 @@ const { data: statistics } = await useAsyncData(async () => {
 
   const statistics = await requestFetch('/api/statistics');
 
-  const orders = ['N', 'NE', 'C', 'S'];
+  const orders = ['C', 'N', 'NE', 'S'];
   return statistics.sort((a, b) => {
     const getOrderIndex = (region: string) => {
       const match = region.match(/^([A-Z]+)(\d*)$/);
