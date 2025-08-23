@@ -10,14 +10,16 @@ const toast = useToast();
 
 const userSession = useUserSession();
 
-const { data } = await useAsyncData('services', async () => {
-  const result = await useRequestFetch()('/api/services');
+const { data: services } = await useAsyncData('services', async () => {
+  const result = await Promise.all([
+    useRequestFetch()('/api/services'),
+    useRequestFetch()('/api/statistics/equipments'),
+  ]);
 
-  const equipmentStatistics = await useRequestFetch()(
-    '/api/statistics/equipments'
-  );
+  const services = result[0].data;
+  const equipmentStatistics = result[1];
 
-  const data = result.data.map((service) => {
+  const data = services.map((service) => {
     if (equipmentStatistics) {
       const equipmentData = equipmentStatistics.find((item) =>
         service.name.startsWith(item.region)
@@ -33,8 +35,6 @@ const { data } = await useAsyncData('services', async () => {
   return data;
 });
 
-const services = ref(data.value ?? []);
-
 const overlay = useOverlay();
 const updateModel = overlay.create(LazyUpdateServiceModal);
 const deleteModal = overlay.create(LazyDeleteServiceModel);
@@ -43,7 +43,7 @@ const deleteModal = overlay.create(LazyDeleteServiceModel);
  * This considered that user is an admin.
  */
 function createDropdownItems(
-  service: (typeof services.value)[number]
+  service: NonNullable<typeof services.value>[number]
 ): DropdownMenuItem[][] {
   const items: DropdownMenuItem[][] = [];
 
@@ -119,6 +119,7 @@ function createDropdownItems(
 
 const list = ref<HTMLElement | null>(null);
 
+// @ts-expect-error Ignore sortable
 useSortable(list, services, {
   handle: '.grip',
   animation: 200,
@@ -127,6 +128,7 @@ useSortable(list, services, {
       oldIndex: number;
       newIndex: number;
     };
+    // @ts-expect-error Ignore sortable
     moveArrayElement(services, oldIndex, newIndex, event);
 
     nextTick(handleReorder);
@@ -160,7 +162,6 @@ function handleReorder() {
     .then(async () => {
       isReordering.value = false;
       await refreshNuxtData('services');
-      services.value = data.value ?? [];
     })
     .catch(() => {
       isReordering.value = false;
