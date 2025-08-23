@@ -12,8 +12,9 @@
     </div>
 
     <ClientOnly>
-      <AvailabilityStatisticChart />
-
+      <div class="max-w-3xl w-full">
+        <AvailabilityStatisticChart />
+      </div>
       <template #fallback>
         <UIcon
           class="w-10 h-10 text-dimmed animate-spin"

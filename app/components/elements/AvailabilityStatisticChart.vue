@@ -60,33 +60,63 @@ const triggers = {
 </script>
 
 <template>
-  <h2 class="font-semibold">AVA Ranking Realtime: FRTU</h2>
-  <div class="grid grid-cols-6 gap-4 text-sm">
-    <div
-      v-for="statistic in statistics"
-      :key="statistic.region"
-      :class="[color(statistic).css, 'font-mono']"
-    >
-      {{ statistic.region }}: {{ Number(statistic.percentage).toFixed(2) }}%
+  <div class="flex flex-col items-center w-full gap-4">
+    <h2 class="font-semibold">AVA Ranking Realtime: FRTU</h2>
+    <div class="grid grid-cols-6 gap-4 text-sm">
+      <div
+        v-for="statistic in statistics"
+        :key="statistic.region"
+        :class="[color(statistic).css, 'font-mono']"
+      >
+        {{ statistic.region }}: {{ Number(statistic.percentage).toFixed(2) }}%
+      </div>
+    </div>
+    <template v-if="statistics">
+      <VisXYContainer class="w-full">
+        <VisGroupedBar
+          :color="(d: Statistic) => color(d).hue"
+          :data="statistics"
+          :x="x"
+          :y="y"
+          :group-padding="0.25"
+        />
+        <VisAxis
+          type="x"
+          label="Region"
+          :tick-format="tickFormat"
+          :num-ticks="statistics?.length"
+        />
+        <VisAxis type="y" label="Availability (%)" />
+        <VisTooltip :triggers="triggers" />
+      </VisXYContainer>
+    </template>
+    <div class="self-stretch text-sm">
+      <ul class="flex justify-between w-full">
+        <li>
+          <div class="inline-flex items-center gap-1 text-muted">
+            <div
+              class="inline-block w-3 h-3 bg-emerald-500 dark:bg-emerald-400 rounded-full"
+            />
+            <span>สีเขียว : เปอร์เซนต์ 80% ขึ้นไป</span>
+          </div>
+        </li>
+        <li>
+          <div class="inline-flex items-center gap-1 text-muted">
+            <div
+              class="inline-block w-3 h-3 bg-orange-500 dark:bg-orange-400 rounded-full"
+            />
+            <span>สีส้ม : เปอร์เซนต์ 50% - 80%</span>
+          </div>
+        </li>
+        <li>
+          <div class="inline-flex items-center gap-1 text-muted">
+            <div
+              class="inline-block w-3 h-3 bg-red-500 dark:bg-red-400 rounded-full"
+            />
+            <span>สีแดง : เปอร์เซนต์ ต่ำกว่า 50%</span>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
-  <template v-if="statistics">
-    <VisXYContainer class="max-w-3xl">
-      <VisGroupedBar
-        :color="(d: Statistic) => color(d).hue"
-        :data="statistics"
-        :x="x"
-        :y="y"
-        :group-padding="0.25"
-      />
-      <VisAxis
-        type="x"
-        label="Region"
-        :tick-format="tickFormat"
-        :num-ticks="statistics?.length"
-      />
-      <VisAxis type="y" label="Availability (%)" />
-      <VisTooltip :triggers="triggers" />
-    </VisXYContainer>
-  </template>
 </template>
