@@ -1,9 +1,14 @@
 import google from 'googleapis';
 
 export function useGoogleAuth(scopes?: string[]): google.Auth.GoogleAuth {
+  const { googleClientEmail, googlePrivateKey } = useRuntimeConfig();
+
   const auth = new google.Auth.GoogleAuth({
     scopes: scopes,
-    keyFile: 'service-account.json',
+    credentials: {
+      client_email: googleClientEmail,
+      private_key: googlePrivateKey.replace(/\\n/g, '\n'),
+    },
   });
 
   return auth;

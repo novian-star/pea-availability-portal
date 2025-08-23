@@ -19,6 +19,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseURL: process.env.DATABASE_URL,
     statisticsSheetId: process.env.STATISTICS_SHEET_ID,
+    googleClientEmail: process.env.GOOGLE_CLIENT_EMAIL,
+    googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
   },
 
   css: ['~/assets/css/main.css'],
