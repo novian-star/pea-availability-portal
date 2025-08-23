@@ -17,5 +17,7 @@
     &.dark {
       --ui-bg: var(--ui-color-neutral-950);
     }
+
+    --vis-font-family: 'LINE Seend Sans TH', sans-serif;
   }
 }
