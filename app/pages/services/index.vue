@@ -247,7 +247,7 @@ const equipmentColor = (n: number) => {
                     <!-- @vue-ignore -->
                     <div
                       v-if="service.equipment"
-                      class="flex flex-col sm:flex-row sm:items-center sm:ms-auto gap-2 sm:gap-4 font-medium text-xs tracking-tighter"
+                      class="flex items-center sm:ms-auto gap-2 sm:gap-4 font-medium text-xs tracking-tighter"
                     >
                       <!-- @vue-ignore -->
                       <div
@@ -256,7 +256,7 @@ const equipmentColor = (n: number) => {
                           equipmentColor(service.equipment.frtu.percentage),
                         ]"
                       >
-                        FRTU:
+                        FRTU :
                         <!-- @vue-ignore -->
                         {{
                           Number(service.equipment.frtu.percentage).toFixed(2)
@@ -265,27 +265,14 @@ const equipmentColor = (n: number) => {
                       <!-- @vue-ignore -->
                       <div
                         :class="[
-                          'w-20',
+                          'w-28',
                           equipmentColor(service.equipment.sub.percentage),
                         ]"
                       >
-                        SUB:
+                        Substation :
                         <!-- @vue-ignore -->
                         {{
                           Number(service.equipment.sub.percentage).toFixed(2)
-                        }}%
-                      </div>
-                      <!-- @vue-ignore -->
-                      <div
-                        :class="[
-                          'w-20',
-                          equipmentColor(service.equipment.vsp.percentage),
-                        ]"
-                      >
-                        VSP:
-                        <!-- @vue-ignore -->
-                        {{
-                          Number(service.equipment.vsp.percentage).toFixed(2)
                         }}%
                       </div>
                     </div>
