@@ -10,6 +10,8 @@ const toast = useToast();
 
 const userSession = useUserSession();
 
+const timestamp = ref(String(Date.now()));
+
 const { data: services } = await useAsyncData('services', async () => {
   const result = await Promise.all([
     useRequestFetch()('/api/services'),
@@ -17,7 +19,8 @@ const { data: services } = await useAsyncData('services', async () => {
   ]);
 
   const services = result[0].data;
-  const equipmentStatistics = result[1];
+  const equipmentStatistics = result[1].data;
+  timestamp.value = result[1].timestamp || String(Date.now());
 
   const data = services.map((service) => {
     if (equipmentStatistics) {
@@ -306,6 +309,11 @@ const equipmentColor = (n: number) => {
           </template>
         </ul>
       </template>
+      <div class="py-4">
+        <p class="text-end text-xs text-muted">
+          ข้อมูล ณ เวลา: {{ new Date(timestamp).toLocaleString('th-TH') }}
+        </p>
+      </div>
     </div>
   </div>
 </template>

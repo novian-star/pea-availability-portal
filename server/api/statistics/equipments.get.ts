@@ -24,51 +24,65 @@ export default defineEventHandler({
           spreadsheetId: equipmentsSheetId,
           range: "'AVA SPP VSPP 115 kV'!A1:E",
         }),
+        // Timestamp
+        sheets.spreadsheets.values.get({
+          spreadsheetId: equipmentsSheetId,
+          range: "'ข้อมูล ณ เวลา'!A1:A",
+        }),
       ]);
 
       result.forEach((result) => result.data.values?.splice(0, 1)); // Remove header row
 
+      const rawTimestamp = String(result[3].data.values?.[0]?.[0]);
+      const rawDate = rawTimestamp.slice(0, 9);
+      const [year, month, day] = rawDate.split(/\//g).toReversed();
+      const date = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      const time = rawTimestamp.slice(-8, -3);
+      const timestamp = new Date(`${date}T${time}:00+07:00`);
+
       const regions = result[0].data.values?.map((row) => String(row[0])) || [];
+      const data = {
+        data: regions.map((region) => {
+          const frtuData = result[0].data.values?.find(
+            (row) => String(row[0]) === region
+          );
+          const subData = result[1].data.values?.find(
+            (row) => String(row[0]) === region
+          );
+          const vspData = result[2].data.values?.find(
+            (row) => String(row[0]) === region
+          );
 
-      const data = regions.map((region) => {
-        const frtuData = result[0].data.values?.find(
-          (row) => String(row[0]) === region
-        );
-        const subData = result[1].data.values?.find(
-          (row) => String(row[0]) === region
-        );
-        const vspData = result[2].data.values?.find(
-          (row) => String(row[0]) === region
-        );
-
-        return {
-          region,
-          frtu: frtuData
-            ? {
-                online: Number(frtuData[1]),
-                total: Number(frtuData[2]),
-                percentage: Number(frtuData[3]),
-                ranking: Number(frtuData[4]),
-              }
-            : null,
-          sub: subData
-            ? {
-                online: Number(subData[1]),
-                total: Number(subData[2]),
-                percentage: Number(subData[3]),
-                ranking: Number(subData[4]),
-              }
-            : null,
-          vsp: vspData
-            ? {
-                online: Number(vspData[1]),
-                total: Number(vspData[2]),
-                percentage: Number(vspData[3]),
-                ranking: Number(vspData[4]),
-              }
-            : null,
-        };
-      });
+          return {
+            region,
+            frtu: frtuData
+              ? {
+                  online: Number(frtuData[1]),
+                  total: Number(frtuData[2]),
+                  percentage: Number(frtuData[3]),
+                  ranking: Number(frtuData[4]),
+                }
+              : null,
+            sub: subData
+              ? {
+                  online: Number(subData[1]),
+                  total: Number(subData[2]),
+                  percentage: Number(subData[3]),
+                  ranking: Number(subData[4]),
+                }
+              : null,
+            vsp: vspData
+              ? {
+                  online: Number(vspData[1]),
+                  total: Number(vspData[2]),
+                  percentage: Number(vspData[3]),
+                  ranking: Number(vspData[4]),
+                }
+              : null,
+          };
+        }),
+        timestamp: timestamp,
+      };
 
       if (!data) {
         throw createError({
