@@ -9,10 +9,15 @@ import {
 
 type Statistic = NonNullable<typeof statistics.value>[number];
 
+const timestamp = ref<Date | null>(null);
+
 const { data: statistics } = await useAsyncData(async () => {
   const requestFetch = useRequestFetch();
 
-  const statistics = await requestFetch('/api/statistics');
+  const { data: statistics, timestamp: fetchedTimestamp } = await requestFetch(
+    '/api/statistics'
+  );
+  timestamp.value = new Date(fetchedTimestamp);
 
   const orders = ['C', 'N', 'NE', 'S'];
   return statistics.sort((a, b) => {
@@ -117,6 +122,11 @@ const triggers = {
           </div>
         </li>
       </ul>
+    </div>
+    <div class="self-end">
+      <p class="text-end text-xs text-muted">
+        ข้อมูล ณ เวลา: {{ timestamp?.toLocaleString('th-TH') }}
+      </p>
     </div>
   </div>
 </template>

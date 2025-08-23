@@ -27,7 +27,7 @@ export default defineEventHandler({
         // Timestamp
         sheets.spreadsheets.values.get({
           spreadsheetId: equipmentsSheetId,
-          range: "'ข้อมูล ณ เวลา'!A1:A",
+          range: "'ข้อมูล ณ เวลา'!A1:A2",
         }),
       ]);
 
