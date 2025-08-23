@@ -18,6 +18,7 @@
 		"@nuxt/ui": "^3.2.0",
 		"@vueuse/nuxt": "13.5.0",
 		"drizzle-orm": "^0.44.3",
+		"googleapis": "^157.0.0",
 		"nuxt": "^3.17.7",
 		"nuxt-auth-utils": "0.5.20",
 		"pg": "^8.16.3",
