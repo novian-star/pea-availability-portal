@@ -2,12 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  modules: [
-    '@nuxt/ui',
-    '@nuxt/eslint',
-    'nuxt-auth-utils',
-    '@vueuse/nuxt',
-  ],
+  modules: ['@nuxt/ui', '@nuxt/eslint', 'nuxt-auth-utils', '@vueuse/nuxt'],
 
   future: {
     compatibilityVersion: 4,
@@ -23,6 +18,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     databaseURL: process.env.DATABASE_URL,
+    statisticsSheetId: process.env.STATISTICS_SHEET_ID,
   },
 
   css: ['~/assets/css/main.css'],
