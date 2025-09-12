@@ -9,11 +9,6 @@
 		/>
 		<div class="flex flex-col items-center gap-y-4">
 			<UButton icon="lucide:server" to="/services"> ไปหน้าบริการ </UButton>
-			<p class="max-w-xl text-center text-sm text-error">
-				!!ปัจจุบันมี Workshop แก้ไข Database Naming Standard ตามมาตรฐานของ ศปฟ.
-				<br />ทำให้ข้อมูลที่แสดงผลอาจไม่สมบูรณ์ ปัจจุบันอยู่ระหว่างปรับปรุง
-				<br />ขออภัยในความไม่สะดวกครับ
-			</p>
 		</div>
 
 		<ClientOnly>
