@@ -34,6 +34,7 @@ type ResultTokens = {
 	expires_in: number;
 	refresh_token: string;
 	refresh_expires_in: number;
+	id_token: string;
 };
 
 export default defineOAuthKeycloakEventHandler({
@@ -67,6 +68,13 @@ export default defineOAuthKeycloakEventHandler({
 		);
 
 		await logAction(upsertedUser.id, 'ลงชื่อเข้าใช้ระบบ');
+
+		setCookie(event, 'id_token', resultTokens.id_token, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'lax',
+			maxAge: resultTokens.refresh_expires_in,
+		});
 
 		sendRedirect(event, '/');
 	},
