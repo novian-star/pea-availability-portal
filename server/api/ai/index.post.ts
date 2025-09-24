@@ -28,25 +28,29 @@ const schema = z4.object({
 	}),
 });
 
-export default defineEventHandler(async (event) => {
-	const body = await readValidatedBody(event, schema.parse);
+export default defineEventHandler({
+	onRequest: [requireUserSessionEventHandler()],
 
-	try {
-		const data = await fetchSheetData(body.region, body.type);
-		const limitedData = data.slice(0, MAX_DATA_ENTRIES);
+	handler: async (event) => {
+		const body = await readValidatedBody(event, schema.parse);
 
-		const aiResponse = await generateAIResponse(body.prompt, limitedData);
+		try {
+			const data = await fetchSheetData(body.region, body.type);
+			const limitedData = data.slice(0, MAX_DATA_ENTRIES);
 
-		return { data: aiResponse };
-	} catch (error) {
-		console.error('Error processing AI request:', error);
+			const aiResponse = await generateAIResponse(body.prompt, limitedData);
 
-		throw createError({
-			statusCode: 500,
-			statusMessage: 'Internal Server Error',
-			message: 'Failed to process request',
-		});
-	}
+			return { data: aiResponse };
+		} catch (error) {
+			console.error('Error processing AI request:', error);
+
+			throw createError({
+				statusCode: 500,
+				statusMessage: 'Internal Server Error',
+				message: 'Failed to process request',
+			});
+		}
+	},
 });
 
 async function fetchSheetData(region: string, type: RequestBody['type']) {
