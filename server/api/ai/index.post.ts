@@ -38,7 +38,9 @@ export default defineEventHandler(async (event) => {
 		const aiResponse = await generateAIResponse(body.prompt, limitedData);
 
 		return { data: aiResponse };
-	} catch {
+	} catch (error) {
+		console.error('Error processing AI request:', error);
+
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'Internal Server Error',
@@ -48,7 +50,9 @@ export default defineEventHandler(async (event) => {
 });
 
 async function fetchSheetData(region: string, type: RequestBody['type']) {
-	const sheets = useGoogleSheets(useGoogleAuth());
+	const sheets = useGoogleSheets(
+		useGoogleAuth(['https://www.googleapis.com/auth/spreadsheets.readonly'])
+	);
 	const sheetService = new SheetService(sheets);
 
 	return type === 'frtu'
