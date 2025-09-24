@@ -22,6 +22,7 @@ export default defineNuxtConfig({
 		equipmentsSheetId: process.env.EQUIPMENTS_SHEET_ID,
 		googleClientEmail: process.env.GOOGLE_CLIENT_EMAIL,
 		googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
+		googleGenAiApiKey: process.env.GOOGLE_GEN_AI_API_KEY,
 		allowedOrigins: process.env.ALLOWED_ORIGINS,
 	},
 
