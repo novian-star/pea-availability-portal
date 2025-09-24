@@ -23,6 +23,8 @@ export default defineNuxtConfig({
 		googleClientEmail: process.env.GOOGLE_CLIENT_EMAIL,
 		googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY,
 		googleGenAiApiKey: process.env.GOOGLE_GEN_AI_API_KEY,
+		frtuSheetId: process.env.FRTU_SHEET_ID,
+		substationSheetId: process.env.SUBSTATION_SHEET_ID,
 		allowedOrigins: process.env.ALLOWED_ORIGINS,
 	},
 
