@@ -17,7 +17,7 @@ export function useNavigation() {
 					to: '/services',
 				},
 				{
-					label: 'AI Assistant',
+					label: 'AI Assistant (Demo)',
 					icon: 'lucide:bot-message-square',
 					to: '/ai',
 				},
