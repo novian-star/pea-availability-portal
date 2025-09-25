@@ -36,7 +36,7 @@ export default defineEventHandler({
 
 		try {
 			const data = await fetchSheetData(body.region, body.type);
-			const limitedData = data.slice(0, MAX_DATA_ENTRIES);
+			// const limitedData = data.slice(0, MAX_DATA_ENTRIES);
 
 			const aiResponse = await generateAIResponse(body.prompt, limitedData);
 
