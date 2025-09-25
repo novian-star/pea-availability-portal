@@ -68,7 +68,7 @@ async function generateAIResponse(prompt: string, data: unknown[]) {
 	const googleGenAI = useGoogleGenAI();
 
 	const response = await googleGenAI.models.generateContent({
-		model: 'gemini-2.5-flash-lite',
+		model: 'gemini-2.5-flash',
 		contents: `${prompt} โดยอ้างอิงจากข้อมูลนี้ ${JSON.stringify(data)}`,
 		config: {
 			systemInstruction: SYSTEM_INSTRUCTION,
