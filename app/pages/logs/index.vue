@@ -131,9 +131,11 @@ async function handleDownload() {
 					<UFormField label="ประเภทบันทึก">
 						<USelect
 							v-model="filter"
+							class="w-48"
 							:items="filterItems"
 							label="กรองบันทึก"
-							class="w-48"
+							:disabled="pending"
+							:loading="pending"
 						/>
 					</UFormField>
 				</div>
