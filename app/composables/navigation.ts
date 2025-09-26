@@ -22,9 +22,9 @@ export function useNavigation() {
 					to: '/ai',
 				},
 				{
-					label: 'ดาวน์โหลดข้อมูล',
-					icon: 'lucide:download',
-					to: '/downloads',
+					label: 'Database Service',
+					icon: 'lucide:database',
+					to: '/database',
 				},
 			],
 		];

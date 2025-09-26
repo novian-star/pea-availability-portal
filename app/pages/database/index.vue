@@ -87,8 +87,8 @@ const selectedTypeLabel = computed(() => {
 	<div class="max-w-2xl mx-auto">
 		<header class="flex items-center justify-between h-16 px-4 border-b">
 			<div class="flex items-center gap-2">
-				<UIcon class="w-5 h-5" name="lucide:download" />
-				<h1 class="font-semibold">ดาวน์โหลดข้อมูล</h1>
+				<UIcon class="w-5 h-5" name="lucide:database" />
+				<h1 class="font-semibold">Database Service</h1>
 			</div>
 		</header>
 
