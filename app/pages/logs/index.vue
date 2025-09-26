@@ -88,7 +88,9 @@ async function handleDownload() {
 		<main>
 			<div>
 				<!-- Page size selector and stats -->
-				<div class="flex items-center justify-between p-4 border-b">
+				<div
+					class="flex flex-col sm:flex-row items-center justify-between p-4 gap-4 border-b"
+				>
 					<div
 						v-if="pagination"
 						class="text-sm text-gray-600 dark:text-gray-400"
@@ -129,7 +131,7 @@ async function handleDownload() {
 				<!-- Pagination -->
 				<div
 					v-if="pagination && pagination.totalPages > 1"
-					class="flex items-center justify-center p-4 border-t"
+					class="flex items-center justify-center sm:justify-end p-4 border-t"
 				>
 					<UPagination
 						v-model:page="currentPage"

@@ -145,7 +145,9 @@ async function handleDropdownAction(
 		<main>
 			<div>
 				<!-- Page -->
-				<div class="flex items-center justify-between p-4 border-b">
+				<div
+					class="flex flex-col sm:flex-row items-center justify-between p-4 gap-4 border-b"
+				>
 					<div
 						v-if="pagination"
 						class="text-sm text-gray-600 dark:text-gray-400"
@@ -209,7 +211,7 @@ async function handleDropdownAction(
 				<!-- Pagination -->
 				<div
 					v-if="pagination && pagination.totalPages > 1"
-					class="flex items-center justify-end p-4 border-t"
+					class="flex items-center justify-center sm:justify-end p-4 border-t"
 				>
 					<UPagination
 						v-model:page="currentPage"
