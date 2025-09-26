@@ -130,6 +130,10 @@ async function handleSubmit() {
 			body: { prompt: prompt.trim(), region, type },
 		});
 
+		if (!response.data) {
+			throw new Error('No response data');
+		}
+
 		addToHistory({
 			ask: prompt.trim(),
 			answer: response.data!,
