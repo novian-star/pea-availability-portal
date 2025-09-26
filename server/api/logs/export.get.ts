@@ -1,7 +1,12 @@
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, like, not } from 'drizzle-orm';
+import z from 'zod';
 
 import { schemas } from '~~/server/database';
 import { jsonToCsv } from '~~/server/utils/json';
+
+const querySchema = z.object({
+	filter: z.enum(['all', 'login', 'other']).default('all').optional(),
+});
 
 export default defineEventHandler({
 	onRequest: [requireAdminEventHandler()],
@@ -10,10 +15,20 @@ export default defineEventHandler({
 		const drizzle = useDrizzle();
 
 		try {
+			const query = await getValidatedQuery(event, querySchema.parse);
+			const { filter } = query;
+
 			const results = await drizzle
 				.select()
 				.from(schemas.log)
 				.leftJoin(schemas.user, eq(schemas.log.userId, schemas.user.id))
+				.where(
+					filter === 'login'
+						? like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%')
+						: filter === 'other'
+							? not(like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%'))
+							: undefined
+				)
 				.orderBy(desc(schemas.log.timestamp));
 
 			const logs = results.map((result) => ({
