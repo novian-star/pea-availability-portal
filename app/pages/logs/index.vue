@@ -5,6 +5,8 @@ definePageMeta({
 	middleware: ['require-admin'],
 });
 
+const toast = useToast();
+
 // Pagination state
 const currentPage = ref(1);
 const pageSize = ref(100);
@@ -74,19 +76,36 @@ const columns: TableColumn<NonNullable<typeof logs.value>[number]>[] = [
 	},
 ];
 
+const isDownloading = ref(false);
+
 async function handleDownload() {
-	const data = await $fetch('/api/logs/export', {
-		responseType: 'blob',
-	});
-	const eleLink = document.createElement('a');
-	eleLink.download = 'logs.csv';
-	eleLink.style.display = 'none';
-	const blob = data as Blob;
-	eleLink.href = URL.createObjectURL(blob);
-	document.body.appendChild(eleLink);
-	eleLink.click();
-	URL.revokeObjectURL(eleLink.href);
-	document.body.removeChild(eleLink);
+	isDownloading.value = true;
+
+	try {
+		const data = await $fetch('/api/logs/export', {
+			responseType: 'blob',
+		});
+
+		const eleLink = document.createElement('a');
+		eleLink.download = 'logs.csv';
+		eleLink.style.display = 'none';
+		const blob = data as Blob;
+		eleLink.href = URL.createObjectURL(blob);
+		document.body.appendChild(eleLink);
+		eleLink.click();
+		URL.revokeObjectURL(eleLink.href);
+		document.body.removeChild(eleLink);
+	} catch (error) {
+		console.error('Download error:', error);
+
+		toast.add({
+			title: 'เกิดข้อผิดพลาด',
+			description: 'ไม่สามารถดาวน์โหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+			color: 'error',
+		});
+	} finally {
+		isDownloading.value = false;
+	}
 }
 </script>
 
@@ -100,6 +119,7 @@ async function handleDownload() {
 					class="ms-auto"
 					icon="lucide:download"
 					variant="ghost"
+					:loading="isDownloading"
 					@click="handleDownload"
 				/>
 			</UTooltip>
