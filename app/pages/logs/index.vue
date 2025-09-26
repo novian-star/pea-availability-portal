@@ -5,11 +5,28 @@ definePageMeta({
 	middleware: ['require-admin'],
 });
 
-const { data: logs } = await useAsyncData('logs', async () => {
-	const result = await useRequestFetch()('/api/logs');
+// Pagination state
+const currentPage = ref(1);
+const pageSize = ref(100);
 
-	return result.data;
-});
+const { data: logsResponse, pending } = await useAsyncData(
+	'logs',
+	async () => {
+		const result = await useRequestFetch()('/api/logs', {
+			query: {
+				page: currentPage.value,
+				limit: pageSize.value,
+			},
+		});
+		return result;
+	},
+	{
+		watch: [currentPage, pageSize],
+	}
+);
+
+const logs = computed(() => logsResponse.value?.data || []);
+const pagination = computed(() => logsResponse.value?.pagination);
 
 const columns: TableColumn<NonNullable<typeof logs.value>[number]>[] = [
 	{
@@ -70,13 +87,58 @@ async function handleDownload() {
 		</header>
 		<main>
 			<div>
-				<UTable :columns="columns" :data="logs" :ui="{ th: 'truncate' }">
-					<template #empty>
-						<div class="text-center text-muted-foreground">
-							ไม่พบบันทึกการใช้งาน
-						</div>
-					</template>
-				</UTable>
+				<!-- Page size selector and stats -->
+				<div class="flex items-center justify-between p-4 border-b">
+					<div
+						v-if="pagination"
+						class="text-sm text-gray-600 dark:text-gray-400"
+					>
+						แสดง {{ (pagination.page - 1) * pagination.limit + 1 }}-{{
+							Math.min(pagination.page * pagination.limit, pagination.total)
+						}}
+						จาก {{ pagination.total }} รายการ
+					</div>
+
+					<div v-if="pagination && pagination.totalPages > 1">
+						<UPagination
+							v-model:page="currentPage"
+							color="neutral"
+							active-color="neutral"
+							:total="pagination.total"
+							:items-per-page="pagination.limit"
+						/>
+					</div>
+				</div>
+
+				<!-- Table with loading state -->
+				<div class="relative">
+					<UTable
+						:columns="columns"
+						:data="logs"
+						:ui="{ th: 'truncate' }"
+						:loading="pending"
+					>
+						<template #empty>
+							<div class="text-center text-muted-foreground">
+								ไม่พบบันทึกการใช้งาน
+							</div>
+						</template>
+					</UTable>
+				</div>
+
+				<!-- Pagination -->
+				<div
+					v-if="pagination && pagination.totalPages > 1"
+					class="flex items-center justify-center p-4 border-t"
+				>
+					<UPagination
+						v-model:page="currentPage"
+						color="neutral"
+						active-color="neutral"
+						:total="pagination.total"
+						:items-per-page="pagination.limit"
+					/>
+				</div>
 			</div>
 		</main>
 	</div>
