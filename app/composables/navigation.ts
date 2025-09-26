@@ -21,6 +21,11 @@ export function useNavigation() {
 					icon: 'lucide:bot-message-square',
 					to: '/ai',
 				},
+				{
+					label: 'ดาวน์โหลดข้อมูล',
+					icon: 'lucide:download',
+					to: '/downloads',
+				},
 			],
 		];
 
