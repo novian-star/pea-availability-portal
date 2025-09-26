@@ -21,6 +21,8 @@ export default defineEventHandler({
 	onRequest: [requireUserSessionEventHandler()],
 
 	handler: async (event) => {
+		const session = await getUserSession(event);
+
 		try {
 			const query = await getValidatedQuery(event, querySchema.parse);
 			const { region, type } = query;
@@ -57,6 +59,8 @@ export default defineEventHandler({
 			);
 			setHeader(event, 'Cache-Control', 'no-cache');
 			setHeader(event, 'Content-Length', xlsxBuffer.length);
+
+			await logAction(session.user!.id, `ดาวน์โหลดไฟล์ ${filename}`);
 
 			return xlsxBuffer;
 		} catch (error) {
