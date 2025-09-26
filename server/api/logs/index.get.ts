@@ -1,10 +1,11 @@
-import { count, desc, eq } from 'drizzle-orm';
+import { count, desc, eq, like, not } from 'drizzle-orm';
 import { z } from 'zod';
 import { schemas } from '~~/server/database';
 
 const querySchema = z.object({
 	page: z.coerce.number().min(1).default(1),
 	limit: z.coerce.number().min(1).max(100).default(20),
+	filter: z.enum(['all', 'login', 'other']).default('all').optional(),
 });
 
 export default defineEventHandler({
@@ -15,13 +16,20 @@ export default defineEventHandler({
 
 		try {
 			const query = await getValidatedQuery(event, querySchema.parse);
-			const { page, limit } = query;
+			const { page, limit, filter } = query;
 			const offset = (page - 1) * limit;
 
 			// Get total count
 			const totalResult = await drizzle
 				.select({ count: count() })
-				.from(schemas.log);
+				.from(schemas.log)
+				.where(
+					filter === 'login'
+						? like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%')
+						: filter === 'other'
+							? not(like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%'))
+							: undefined
+				);
 			const total = totalResult[0]?.count || 0;
 
 			// Get paginated logs with user data
@@ -31,7 +39,14 @@ export default defineEventHandler({
 				.leftJoin(schemas.user, eq(schemas.log.userId, schemas.user.id))
 				.orderBy(desc(schemas.log.timestamp))
 				.limit(limit)
-				.offset(offset);
+				.offset(offset)
+				.where(
+					filter === 'login'
+						? like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%')
+						: filter === 'other'
+							? not(like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%'))
+							: undefined
+				);
 
 			const logs = results.map((result) => ({
 				...result.log,

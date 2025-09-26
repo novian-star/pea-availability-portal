@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TableColumn } from '#ui/types';
+import type { SelectItem, TableColumn } from '#ui/types';
 
 definePageMeta({
 	middleware: ['require-admin'],
@@ -9,6 +9,9 @@ definePageMeta({
 const currentPage = ref(1);
 const pageSize = ref(100);
 
+// Filter state
+const filter = ref('all');
+
 const { data: logsResponse, pending } = await useAsyncData(
 	'logs',
 	async () => {
@@ -16,17 +19,33 @@ const { data: logsResponse, pending } = await useAsyncData(
 			query: {
 				page: currentPage.value,
 				limit: pageSize.value,
+				filter: filter.value || undefined,
 			},
 		});
 		return result;
 	},
 	{
-		watch: [currentPage, pageSize],
+		watch: [currentPage, pageSize, filter],
 	}
 );
 
 const logs = computed(() => logsResponse.value?.data || []);
 const pagination = computed(() => logsResponse.value?.pagination);
+
+const filterItems = [
+	{
+		label: 'ทั้งหมด',
+		value: 'all',
+	},
+	{
+		label: 'ลงชื่อเข้าใช้',
+		value: 'login',
+	},
+	{
+		label: 'อื่น ๆ',
+		value: 'other',
+	},
+] satisfies SelectItem[];
 
 const columns: TableColumn<NonNullable<typeof logs.value>[number]>[] = [
 	{
@@ -87,6 +106,18 @@ async function handleDownload() {
 		</header>
 		<main>
 			<div>
+				<!-- Filter -->
+				<div class="flex p-4 gap-4 border-b">
+					<UFormField label="ประเภทบันทึก">
+						<USelect
+							v-model="filter"
+							:items="filterItems"
+							label="กรองบันทึก"
+							class="w-48"
+						/>
+					</UFormField>
+				</div>
+
 				<!-- Page size selector and stats -->
 				<div
 					class="flex flex-col sm:flex-row items-center justify-between p-4 gap-4 border-b"
