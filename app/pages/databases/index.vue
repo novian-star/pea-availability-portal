@@ -2,18 +2,18 @@
 const toast = useToast();
 
 const regions = [
-	{ value: 'C1', label: 'ภาคกลาง 1' },
-	{ value: 'C2', label: 'ภาคกลาง 2' },
-	{ value: 'C3', label: 'ภาคกลาง 3' },
-	{ value: 'N1', label: 'ภาคเหนือ 1' },
-	{ value: 'N2', label: 'ภาคเหนือ 2' },
-	{ value: 'N3', label: 'ภาคเหนือ 3' },
-	{ value: 'NE1', label: 'ภาคตะวันออกเฉียงเหนือ 1' },
-	{ value: 'NE2', label: 'ภาคตะวันออกเฉียงเหนือ 2' },
-	{ value: 'NE3', label: 'ภาคตะวันออกเฉียงเหนือ 3' },
-	{ value: 'S1', label: 'ภาคใต้ 1' },
-	{ value: 'S2', label: 'ภาคใต้ 2' },
-	{ value: 'S3', label: 'ภาคใต้ 3' },
+	{ value: 'C1', label: 'กฟก. 1' },
+	{ value: 'C2', label: 'กฟก. 2' },
+	{ value: 'C3', label: 'กฟก. 3' },
+	{ value: 'N1', label: 'กฟน. 1' },
+	{ value: 'N2', label: 'กฟน. 2' },
+	{ value: 'N3', label: 'กฟน. 3' },
+	{ value: 'NE1', label: 'กฟฉ. 1' },
+	{ value: 'NE2', label: 'กฟฉ. 2' },
+	{ value: 'NE3', label: 'กฟฉ. 3' },
+	{ value: 'S1', label: 'กฟต. 1' },
+	{ value: 'S2', label: 'กฟต. 2' },
+	{ value: 'S3', label: 'กฟต. 3' },
 ];
 
 const types = [
@@ -32,7 +32,7 @@ async function handleDownload() {
 	if (!form.value.region || !form.value.type) {
 		toast.add({
 			title: 'กรุณาเลือกข้อมูล',
-			description: 'กรุณาเลือกภูมิภาคและประเภทข้อมูลที่ต้องการดาวน์โหลด',
+			description: 'กรุณาเลือกการไฟฟ้าเขตและประเภทข้อมูลที่ต้องการดาวน์โหลด',
 			color: 'error',
 		});
 		return;
@@ -88,7 +88,7 @@ const selectedTypeLabel = computed(() => {
 		<header class="flex items-center justify-between h-16 px-4 border-b">
 			<div class="flex items-center gap-2">
 				<UIcon class="w-5 h-5" name="lucide:database" />
-				<h1 class="font-semibold">Database Service</h1>
+				<h1 class="font-semibold">Database Services</h1>
 			</div>
 		</header>
 
@@ -105,7 +105,7 @@ const selectedTypeLabel = computed(() => {
 						</h3>
 						<p class="text-sm text-primary-700 dark:text-primary-300">
 							ดาวน์โหลดข้อมูลสถานะอุปกรณ์ในรูปแบบ Excel (.xlsx)
-							สามารถเลือกภูมิภาคและประเภทข้อมูลที่ต้องการได้
+							สามารถเลือกการไฟฟ้าเขตและประเภทข้อมูลที่ต้องการได้
 						</p>
 					</div>
 				</div>
@@ -123,12 +123,12 @@ const selectedTypeLabel = computed(() => {
 				<form class="space-y-6" @submit.prevent="handleDownload">
 					<div class="flex items-center gap-2 *:flex-1">
 						<!-- Region Selection -->
-						<UFormField label="ภูมิภาค" required>
+						<UFormField label="การไฟฟ้าเขต" required>
 							<USelect
 								v-model="form.region"
 								class="w-full"
 								:items="regions"
-								placeholder="เลือกภูมิภาค"
+								placeholder="เลือกการไฟฟ้าเขต"
 								value-key="value"
 								:disabled="isDownloading"
 							/>
@@ -158,7 +158,7 @@ const selectedTypeLabel = computed(() => {
 						</h3>
 						<div class="text-sm text-gray-600 dark:text-gray-400">
 							<div>
-								ภูมิภาค:
+								การไฟฟ้าเขต:
 								<span class="font-medium">{{ selectedRegionLabel }}</span>
 							</div>
 							<div>
@@ -197,12 +197,18 @@ const selectedTypeLabel = computed(() => {
 				</form>
 			</UCard>
 
+			<div class="text-sm text-muted">
+				<span class="text-error">*</span>
+				หากต้องการดูรายละเอียดของข้อมูลเพิ่มเติม สามารถเลือกเมนู "บริการ"
+				และเลือกการไฟฟ้าเขตที่ต้องการได้
+			</div>
+
 			<!-- Additional Information -->
 			<UCard>
 				<template #header>
 					<div class="flex items-center gap-2">
 						<UIcon class="w-4 h-4" name="lucide:help-circle" />
-						<h2 class="font-medium">ข้อมูลเพิ่มเติม</h2>
+						<h2 class="font-medium">รายละเอียดเพิ่มเติม</h2>
 					</div>
 				</template>
 

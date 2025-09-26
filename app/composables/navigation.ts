@@ -24,7 +24,7 @@ export function useNavigation() {
 				{
 					label: 'Database Service',
 					icon: 'lucide:database',
-					to: '/database',
+					to: '/databases',
 				},
 			],
 		];
