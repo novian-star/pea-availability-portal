@@ -8,10 +8,9 @@ interface RequestBody {
 }
 
 const VALID_TYPES = ['frtu', 'substation'] as const;
-const MAX_DATA_ENTRIES = 100;
 
 const SYSTEM_INSTRUCTION =
-	'นายเป็นผู้ช่วยที่เชี่ยวชาญด้านการวิเคราะห์ข้อมูล ซึ่งข้อมูลจะเกี่ยวกับสถานะการทำงานของอุปกรณ์ในระบบไฟฟ้า โปรดวิเคราะห์และตอบคำถามที่ได้รับอย่างสั้น ๆ และชัดเจน เนื่องจากมีการจำกัดข้อมูล tokens ในการประมวลผล จึงแนบข้อมูลจำนวนจำกัดมาให้เพื่อประกอบการวิเคราะห์ และไม่มีการแนบข้อมูลเพิ่มเติมประวัติการสนทนาใด ๆ';
+	'นายเป็นผู้ช่วยที่เชี่ยวชาญด้านการวิเคราะห์ข้อมูล ซึ่งข้อมูลจะเกี่ยวกับสถานะการทำงานของอุปกรณ์ในระบบไฟฟ้า โปรดวิเคราะห์และตอบคำถามที่ได้รับอย่างสั้น ๆ และชัดเจน ถ้าผู้ใช้ถามถึงบทสนทนาก่อนหน้า ให้อธิบายเรื่องข้อจำกัดการเข้าถึงข้อมูลของนาย และแนะนำให้ผู้ใช้ถามคำถามใหม่ที่เกี่ยวข้องกับข้อมูลที่มีอยู่';
 
 const schema = z4.object({
 	prompt: z4.string().trim(),
@@ -36,8 +35,6 @@ export default defineEventHandler({
 
 		try {
 			const data = await fetchSheetData(body.region, body.type);
-			// const limitedData = data.slice(0, MAX_DATA_ENTRIES);
-
 			const aiResponse = await generateAIResponse(body.prompt, data);
 
 			return { data: aiResponse };
@@ -64,12 +61,24 @@ async function fetchSheetData(region: string, type: RequestBody['type']) {
 		: sheetService.fetchSubstationSheetData(region);
 }
 
-async function generateAIResponse(prompt: string, data: unknown[]) {
+async function generateAIResponse(
+	prompt: string,
+	data: Record<string, unknown>[]
+) {
 	const googleGenAI = useGoogleGenAI();
 
+	const indexedData = data.map((item, index) => ({ id: index + 1, ...item }));
+
+	const promptWithJson = `
+		${prompt}
+		
+		ข้อมูล JSON: 
+		${JSON.stringify(indexedData, null, 2)}
+		`;
+
 	const response = await googleGenAI.models.generateContent({
-		model: 'gemini-2.5-flash',
-		contents: `${prompt} โดยอ้างอิงจากข้อมูลนี้ ${JSON.stringify(data)}`,
+		model: 'gemini-2.5-flash-lite',
+		contents: promptWithJson,
 		config: {
 			systemInstruction: SYSTEM_INSTRUCTION,
 			temperature: 0.2,
