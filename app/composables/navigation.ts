@@ -22,7 +22,7 @@ export function useNavigation() {
 					to: '/ai',
 				},
 				{
-					label: 'Database Service',
+					label: 'Database Services',
 					icon: 'lucide:database',
 					to: '/databases',
 				},
