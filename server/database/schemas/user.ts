@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { boolean, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { v7 as uuid } from 'uuid';
+import { issue } from './issue';
 import { log } from './log';
 
 // User schema definition
@@ -36,4 +37,5 @@ export const user = pgTable('user', {
 // User relations
 export const userRelations = relations(user, ({ many }) => ({
   logs: many(log),
+  issues: many(issue),
 }));
