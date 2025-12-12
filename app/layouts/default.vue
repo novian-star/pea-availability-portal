@@ -28,10 +28,25 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('visibilitychange', handleVisibilityChange);
 });
+
+const runtimeConfig = useRuntimeConfig();
+
+const bannerMessage = runtimeConfig.public.bannerMessage;
+const bannerType = (() => {
+  switch (runtimeConfig.public.bannerType) {
+    case 'info':
+    case 'warning':
+    case 'error':
+      return runtimeConfig.public.bannerType;
+    default:
+      return 'neutral';
+  }
+})();
 </script>
 
 <template>
   <div>
+    <UBanner v-if="bannerMessage" :color="bannerType" :title="bannerMessage" />
     <ApplicationBar />
     <slot />
   </div>
