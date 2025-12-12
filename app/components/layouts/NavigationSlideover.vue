@@ -30,7 +30,7 @@ watch(
 				class="flex items-center justify-between h-16 px-4 text-sm text-muted"
 			>
 				<p>พัฒนาโดย ผจศ.กปบ.(น3)</p>
-				<p>Version 5.0.1</p>
+				<p>Version 5.1.0</p>
 			</footer>
 		</template>
 	</USlideover>
