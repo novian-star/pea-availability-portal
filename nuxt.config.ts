@@ -27,6 +27,9 @@ export default defineNuxtConfig({
     substationSheetId: process.env.SUBSTATION_SHEET_ID,
     allowedOrigins: process.env.ALLOWED_ORIGINS,
 
+    authenticationAppsScriptUrl: process.env.AUTHENTICATION_APPS_SCRIPT_URL,
+    authenticationAppsScriptKey: process.env.AUTHENTICATION_APPS_SCRIPT_KEY,
+
     public: {
       bannerMessage: process.env.BANNER_MESSAGE,
       bannerType: process.env.BANNER_TYPE,
