@@ -9,6 +9,7 @@ declare module '#auth-utils' {
     position: string;
     isAdmin: boolean;
     isSuperAdmin: boolean;
+    token: string;
   }
 }
 
