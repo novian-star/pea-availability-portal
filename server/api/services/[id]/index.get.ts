@@ -24,8 +24,8 @@ export default defineEventHandler({
               eq(schemas.service.id, String(id)),
               userSession.user.isAdmin
                 ? undefined
-                : isNull(schemas.service.deletedAt)
-            )
+                : isNull(schemas.service.deletedAt),
+            ),
           )
       )[0];
 
@@ -35,6 +35,8 @@ export default defineEventHandler({
           statusMessage: 'Not Found',
         });
       }
+
+      logAction(userSession.user.id, 'เข้าถึงบริการ ' + service.name);
 
       return {
         data: service,
