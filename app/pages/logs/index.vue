@@ -2,7 +2,7 @@
 import type { SelectItem, TableColumn } from '#ui/types';
 
 definePageMeta({
-	middleware: ['require-admin'],
+  middleware: ['require-admin'],
 });
 
 const toast = useToast();
@@ -15,186 +15,190 @@ const pageSize = ref(100);
 const filter = ref('all');
 
 const { data: logsResponse, pending } = await useAsyncData(
-	'logs',
-	async () => {
-		const result = await useRequestFetch()('/api/logs', {
-			query: {
-				page: currentPage.value,
-				limit: pageSize.value,
-				filter: filter.value || undefined,
-			},
-		});
-		return result;
-	},
-	{
-		watch: [currentPage, pageSize, filter],
-	}
+  'logs',
+  async () => {
+    const result = await useRequestFetch()('/api/logs', {
+      query: {
+        page: currentPage.value,
+        limit: pageSize.value,
+        filter: filter.value || undefined,
+      },
+    });
+    return result;
+  },
+  {
+    watch: [currentPage, pageSize, filter],
+  },
 );
 
 const logs = computed(() => logsResponse.value?.data || []);
 const pagination = computed(() => logsResponse.value?.pagination);
 
 const filterItems = [
-	{
-		label: 'ทั้งหมด',
-		value: 'all',
-	},
-	{
-		label: 'ลงชื่อเข้าใช้',
-		value: 'login',
-	},
-	{
-		label: 'อื่น ๆ',
-		value: 'other',
-	},
+  {
+    label: 'ทั้งหมด',
+    value: 'all',
+  },
+  {
+    label: 'ลงชื่อเข้าใช้',
+    value: 'login',
+  },
+  {
+    label: 'เข้าถึงระบบ',
+    value: 'access-service',
+  },
+  {
+    label: 'อื่น ๆ',
+    value: 'other',
+  },
 ] satisfies SelectItem[];
 
 const columns: TableColumn<NonNullable<typeof logs.value>[number]>[] = [
-	{
-		accessorKey: 'user',
-		accessorFn: (row) => `${row.user?.name} (${row.user?.employeeId})`,
-		header: 'ผู้ใช้',
-	},
-	{
-		accessorKey: 'department',
-		accessorFn: (row) => `${row.user?.department}`,
-		header: 'สังกัด',
-	},
-	{
-		accessorKey: 'position',
-		accessorFn: (row) => `${row.user?.position}`,
-		header: 'ตำแหน่ง',
-	},
-	{
-		accessorKey: 'action',
-		header: 'กระบวนการ',
-	},
-	{
-		accessorKey: 'createdAt',
-		accessorFn: (row) => new Date(row.timestamp).toLocaleString('th-TH'),
-		header: 'วันที่',
-	},
+  {
+    accessorKey: 'user',
+    accessorFn: (row) => `${row.user?.name} (${row.user?.employeeId})`,
+    header: 'ผู้ใช้',
+  },
+  {
+    accessorKey: 'department',
+    accessorFn: (row) => `${row.user?.department}`,
+    header: 'สังกัด',
+  },
+  {
+    accessorKey: 'position',
+    accessorFn: (row) => `${row.user?.position}`,
+    header: 'ตำแหน่ง',
+  },
+  {
+    accessorKey: 'action',
+    header: 'กระบวนการ',
+  },
+  {
+    accessorKey: 'createdAt',
+    accessorFn: (row) => new Date(row.timestamp).toLocaleString('th-TH'),
+    header: 'วันที่',
+  },
 ];
 
 const isDownloading = ref(false);
 
 async function handleDownload() {
-	isDownloading.value = true;
+  isDownloading.value = true;
 
-	try {
-		const data = await $fetch('/api/logs/export', {
-			responseType: 'blob',
-		});
+  try {
+    const data = await $fetch('/api/logs/export', {
+      responseType: 'blob',
+    });
 
-		const eleLink = document.createElement('a');
-		eleLink.download = 'logs.csv';
-		eleLink.style.display = 'none';
-		const blob = data as Blob;
-		eleLink.href = URL.createObjectURL(blob);
-		document.body.appendChild(eleLink);
-		eleLink.click();
-		URL.revokeObjectURL(eleLink.href);
-		document.body.removeChild(eleLink);
-	} catch (error) {
-		console.error('Download error:', error);
+    const eleLink = document.createElement('a');
+    eleLink.download = 'logs.csv';
+    eleLink.style.display = 'none';
+    const blob = data as Blob;
+    eleLink.href = URL.createObjectURL(blob);
+    document.body.appendChild(eleLink);
+    eleLink.click();
+    URL.revokeObjectURL(eleLink.href);
+    document.body.removeChild(eleLink);
+  } catch (error) {
+    console.error('Download error:', error);
 
-		toast.add({
-			title: 'เกิดข้อผิดพลาด',
-			description: 'ไม่สามารถดาวน์โหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
-			color: 'error',
-		});
-	} finally {
-		isDownloading.value = false;
-	}
+    toast.add({
+      title: 'เกิดข้อผิดพลาด',
+      description: 'ไม่สามารถดาวน์โหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+      color: 'error',
+    });
+  } finally {
+    isDownloading.value = false;
+  }
 }
 </script>
 
 <template>
-	<div class="divide-y">
-		<header class="flex items-center h-16 px-4 gap-2">
-			<UIcon class="w-5 h-5" name="lucide:logs" />
-			<h1>บันทึกการใช้งาน</h1>
-			<UTooltip text="ดาวน์โหลดบันทึกการใช้งาน">
-				<UButton
-					class="ms-auto"
-					icon="lucide:download"
-					variant="ghost"
-					:loading="isDownloading"
-					@click="handleDownload"
-				/>
-			</UTooltip>
-		</header>
-		<main>
-			<div>
-				<!-- Filter -->
-				<div class="flex p-4 gap-4 border-b">
-					<UFormField label="ประเภทบันทึก">
-						<USelect
-							v-model="filter"
-							class="w-48"
-							:items="filterItems"
-							label="กรองบันทึก"
-							:disabled="pending"
-							:loading="pending"
-						/>
-					</UFormField>
-				</div>
+  <div class="divide-y">
+    <header class="flex items-center h-16 px-4 gap-2">
+      <UIcon class="w-5 h-5" name="lucide:logs" />
+      <h1>บันทึกการใช้งาน</h1>
+      <UTooltip text="ดาวน์โหลดบันทึกการใช้งาน">
+        <UButton
+          class="ms-auto"
+          icon="lucide:download"
+          variant="ghost"
+          :loading="isDownloading"
+          @click="handleDownload"
+        />
+      </UTooltip>
+    </header>
+    <main>
+      <div>
+        <!-- Filter -->
+        <div class="flex p-4 gap-4 border-b">
+          <UFormField label="ประเภทบันทึก">
+            <USelect
+              v-model="filter"
+              class="w-48"
+              :items="filterItems"
+              label="กรองบันทึก"
+              :disabled="pending"
+              :loading="pending"
+            />
+          </UFormField>
+        </div>
 
-				<!-- Page size selector and stats -->
-				<div
-					class="flex flex-col sm:flex-row items-center justify-between p-4 gap-4 border-b"
-				>
-					<div
-						v-if="pagination"
-						class="text-sm text-gray-600 dark:text-gray-400"
-					>
-						แสดง {{ (pagination.page - 1) * pagination.limit + 1 }}-{{
-							Math.min(pagination.page * pagination.limit, pagination.total)
-						}}
-						จาก {{ pagination.total }} รายการ
-					</div>
+        <!-- Page size selector and stats -->
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between p-4 gap-4 border-b"
+        >
+          <div
+            v-if="pagination"
+            class="text-sm text-gray-600 dark:text-gray-400"
+          >
+            แสดง {{ (pagination.page - 1) * pagination.limit + 1 }}-{{
+              Math.min(pagination.page * pagination.limit, pagination.total)
+            }}
+            จาก {{ pagination.total }} รายการ
+          </div>
 
-					<div v-if="pagination && pagination.totalPages > 1">
-						<UPagination
-							v-model:page="currentPage"
-							color="neutral"
-							active-color="neutral"
-							:total="pagination.total"
-							:items-per-page="pagination.limit"
-						/>
-					</div>
-				</div>
+          <div v-if="pagination && pagination.totalPages > 1">
+            <UPagination
+              v-model:page="currentPage"
+              color="neutral"
+              active-color="neutral"
+              :total="pagination.total"
+              :items-per-page="pagination.limit"
+            />
+          </div>
+        </div>
 
-				<!-- Table with loading state -->
-				<div class="relative">
-					<UTable
-						:columns="columns"
-						:data="logs"
-						:ui="{ th: 'truncate' }"
-						:loading="pending"
-					>
-						<template #empty>
-							<div class="text-center text-muted-foreground">
-								ไม่พบบันทึกการใช้งาน
-							</div>
-						</template>
-					</UTable>
-				</div>
+        <!-- Table with loading state -->
+        <div class="relative">
+          <UTable
+            :columns="columns"
+            :data="logs"
+            :ui="{ th: 'truncate' }"
+            :loading="pending"
+          >
+            <template #empty>
+              <div class="text-center text-muted-foreground">
+                ไม่พบบันทึกการใช้งาน
+              </div>
+            </template>
+          </UTable>
+        </div>
 
-				<!-- Pagination -->
-				<div
-					v-if="pagination && pagination.totalPages > 1"
-					class="flex items-center justify-center sm:justify-end p-4 border-t"
-				>
-					<UPagination
-						v-model:page="currentPage"
-						color="neutral"
-						active-color="neutral"
-						:total="pagination.total"
-						:items-per-page="pagination.limit"
-					/>
-				</div>
-			</div>
-		</main>
-	</div>
+        <!-- Pagination -->
+        <div
+          v-if="pagination && pagination.totalPages > 1"
+          class="flex items-center justify-center sm:justify-end p-4 border-t"
+        >
+          <UPagination
+            v-model:page="currentPage"
+            color="neutral"
+            active-color="neutral"
+            :total="pagination.total"
+            :items-per-page="pagination.limit"
+          />
+        </div>
+      </div>
+    </main>
+  </div>
 </template>
