@@ -223,13 +223,8 @@ const equipmentColor = (n: number) => {
                   <div class="flex flex-1 flex-col sm:flex-row sm:items-center">
                     <NuxtLink
                       class="flex items-center min-h-9"
-                      :to="
-                        service.urlType === 'external'
-                          ? `${service.url}`
-                          : `/services/embed/${service.id}`
-                      "
+                      :to="`/services/embed/${service.id}`"
                       target="_blank"
-                      :external="service.urlType === 'external'"
                     >
                       <UIcon class="me-2" name="lucide:server" />
                       <h2
