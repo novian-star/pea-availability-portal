@@ -1,4 +1,4 @@
-import { count, desc, eq, like, not } from 'drizzle-orm';
+import { and, count, desc, eq, like, not } from 'drizzle-orm';
 import { z } from 'zod';
 import { schemas } from '~~/server/database';
 
@@ -76,14 +76,25 @@ export default defineEventHandler({
 });
 
 function getFilterCondition(filter: string | undefined) {
+  const likeStrings = {
+    login: '%ลงชื่อเข้าใช้ระบบ%',
+    'access-service': '%เข้าถึงบริการ%',
+  };
+
   switch (filter) {
+    case 'all':
+      return undefined;
     case 'login':
-      return like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%');
+      return like(schemas.log.action, likeStrings['login']);
     case 'access-service':
-      return like(schemas.log.action, '%เข้าถึงบริการ%');
+      return like(schemas.log.action, likeStrings['access-service']);
     case 'other':
-      return not(like(schemas.log.action, '%ลงชื่อเข้าใช้ระบบ%'));
+      return and(
+        not(like(schemas.log.action, likeStrings['login'])),
+        not(like(schemas.log.action, likeStrings['access-service'])),
+      );
     default:
+      console.warn('Unknown filter:', filter);
       return undefined;
   }
 }
