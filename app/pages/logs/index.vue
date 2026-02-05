@@ -48,6 +48,10 @@ const filterItems = [
     value: 'access-service',
   },
   {
+    label: 'ดาวน์โหลดข้อมูล',
+    value: 'download',
+  },
+  {
     label: 'อื่น ๆ',
     value: 'other',
   },
