@@ -8,7 +8,7 @@ const querySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
   filter: z
-    .enum(['all', 'login', 'access-service', 'other'])
+    .enum(['all', 'login', 'access-service', 'download', 'other'])
     .default('all')
     .optional(),
 });
@@ -68,6 +68,7 @@ function getFilterCondition(filter: string | undefined) {
   const likeStrings = {
     login: '%ลงชื่อเข้าใช้ระบบ%',
     'access-service': '%เข้าถึงบริการ%',
+    download: '%ดาวน์โหลด%',
   };
 
   switch (filter) {
@@ -77,10 +78,13 @@ function getFilterCondition(filter: string | undefined) {
       return like(schemas.log.action, likeStrings['login']);
     case 'access-service':
       return like(schemas.log.action, likeStrings['access-service']);
+    case 'download':
+      return like(schemas.log.action, likeStrings['download']);
     case 'other':
       return and(
         not(like(schemas.log.action, likeStrings['login'])),
         not(like(schemas.log.action, likeStrings['access-service'])),
+        not(like(schemas.log.action, likeStrings['download'])),
       );
     default:
       console.warn('Unknown filter:', filter);
