@@ -26,6 +26,9 @@
 
     --vis-axis-tick-color: var(--ui-color-neutral-200);
     --vis-axis-grid-color: var(--ui-color-neutral-200);
+
+    --vis-color-main: var(--ui-color-neutral-800);
+    --vis-color0: var(--ui-color-neutral-800);
   }
 
   &.dark {
@@ -33,5 +36,8 @@
 
     --vis-axis-tick-color: var(--ui-color-neutral-800);
     --vis-axis-grid-color: var(--ui-color-neutral-800);
+
+    --vis-color-main: var(--ui-color-neutral-300);
+    --vis-color0: var(--ui-color-neutral-300);
   }
 }
