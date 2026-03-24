@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SelectItem, TableColumn } from '#ui/types';
+import { CalendarDate } from '@internationalized/date';
 
 definePageMeta({
   middleware: ['require-admin'],
@@ -115,6 +116,51 @@ async function handleDownload() {
     isDownloading.value = false;
   }
 }
+
+const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+const today = new Date();
+
+const loginStartDate = useTemplateRef('loginStartDate');
+const loginEndDate = useTemplateRef('loginEndDate');
+const loginStartDateValue = shallowRef(
+  new CalendarDate(
+    sevenDaysAgo.getFullYear(),
+    sevenDaysAgo.getMonth() + 1,
+    sevenDaysAgo.getDate(),
+  ),
+);
+const loginEndDateValue = shallowRef(
+  new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()),
+);
+
+const { data: loginStats, pending: loginLoading } = useLazyAsyncData(
+  'login-stats',
+  async () => {
+    const result = await useRequestFetch()('/api/logs/login', {
+      query: {
+        startDate: loginStartDateValue.value.toString(),
+        endDate: loginEndDateValue.value.toString(),
+      },
+    });
+
+    return result.data;
+  },
+  {
+    watch: [loginStartDateValue, loginEndDateValue],
+  },
+);
+
+function getMaxLoginStartDate() {
+  return loginEndDateValue.value.subtract({
+    days: 1,
+  });
+}
+
+function getMinLoginEndDate() {
+  return loginStartDateValue.value.add({
+    days: 1,
+  });
+}
 </script>
 
 <template>
@@ -147,6 +193,77 @@ async function handleDownload() {
             />
           </UFormField>
         </div>
+
+        <template v-if="filter === 'login'">
+          <div class="grid sm:grid-cols-2 p-4 border-b gap-4">
+            <UFormField label="วันเริ่มต้น">
+              <UInputDate
+                ref="loginStartDate"
+                v-model="loginStartDateValue"
+                :loading="loginLoading"
+                :max-value="getMaxLoginStartDate()"
+              >
+                <template #trailing>
+                  <UPopover :reference="loginStartDate?.inputsRef[3]?.$el">
+                    <UButton
+                      color="neutral"
+                      variant="link"
+                      size="sm"
+                      icon="i-lucide-calendar"
+                      aria-label="Select a date"
+                      class="px-0"
+                    />
+
+                    <template #content>
+                      <UCalendar
+                        v-model="loginStartDateValue"
+                        class="p-2"
+                        :disabled="loginLoading"
+                        :max-value="getMaxLoginStartDate()"
+                        prevent-deselect
+                      />
+                    </template>
+                  </UPopover>
+                </template>
+              </UInputDate>
+            </UFormField>
+            <UFormField label="วันสิ้นสุด">
+              <UInputDate
+                ref="loginEndDate"
+                v-model="loginEndDateValue"
+                :loading="loginLoading"
+                :min-value="getMinLoginEndDate()"
+              >
+                <template #trailing>
+                  <UPopover :reference="loginEndDate?.inputsRef[3]?.$el">
+                    <UButton
+                      color="neutral"
+                      variant="link"
+                      size="sm"
+                      icon="i-lucide-calendar"
+                      aria-label="Select a date"
+                      class="px-0"
+                    />
+
+                    <template #content>
+                      <UCalendar
+                        v-model="loginEndDateValue"
+                        class="p-2"
+                        :disabled="loginLoading"
+                        :min-value="getMinLoginEndDate()"
+                        prevent-deselect
+                      />
+                    </template>
+                  </UPopover>
+                </template>
+              </UInputDate>
+            </UFormField>
+
+            <div class="border p-4 sm:col-span-2">
+              <LazyLoginLineChart :data="loginStats || []" />
+            </div>
+          </div>
+        </template>
 
         <!-- Page size selector and stats -->
         <div
