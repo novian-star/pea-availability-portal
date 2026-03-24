@@ -17,7 +17,21 @@
     &.dark {
       --ui-bg: var(--ui-color-neutral-950);
     }
+  }
+}
 
+:root {
+  &.light {
     --vis-font-family: 'LINE Seend Sans TH', sans-serif;
+
+    --vis-axis-tick-color: var(--ui-color-neutral-200);
+    --vis-axis-grid-color: var(--ui-color-neutral-200);
+  }
+
+  &.dark {
+    --vis-font-family: 'LINE Seend Sans TH', sans-serif;
+
+    --vis-axis-tick-color: var(--ui-color-neutral-800);
+    --vis-axis-grid-color: var(--ui-color-neutral-800);
   }
 }
