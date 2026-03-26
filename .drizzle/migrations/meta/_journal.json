@@ -22,6 +22,20 @@
       "when": 1761452119049,
       "tag": "0002_optimal_abomination",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1774509556981,
+      "tag": "0003_gray_psynapse",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1774511181243,
+      "tag": "0004_closed_pixie",
+      "breakpoints": true
     }
   ]
 }

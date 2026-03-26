@@ -8,7 +8,7 @@ const { items } = useNavigation();
 const route = useRoute();
 watch(
   () => route.path,
-	() => emit('close')
+  () => emit('close'),
 );
 </script>
 

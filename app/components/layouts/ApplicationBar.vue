@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import NavigationSlideover from '~/components/layouts/NavigationSlideover.vue';
+import NoticeModal from '~/components/NoticeModal.vue';
 
 const navigationSlideover = useOverlay().create(NavigationSlideover);
+
+const { notice, isEnabled } = useNotice();
+const noticeModal = useOverlay().create(NoticeModal);
+
+function handleNoticeClick() {
+  if (notice.value) {
+    noticeModal.open({ data: notice.value });
+  }
+}
 </script>
 
 <template>
@@ -17,6 +27,12 @@ const navigationSlideover = useOverlay().create(NavigationSlideover);
       <UButton icon="lucide:house" to="/" />
     </div>
     <div class="flex items-center gap-4">
+      <UButton
+        v-if="isEnabled && notice"
+        icon="lucide:bell"
+        variant="ghost"
+        @click="handleNoticeClick"
+      />
       <UserSessionMenu />
     </div>
   </header>

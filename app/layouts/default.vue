@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import NoticeModal from '~/components/NoticeModal.vue';
+
 const userSession = useUserSession();
+
+const { notice, shouldShowPopup, markAsSeen } = useNotice();
+const noticeModal = useOverlay().create(NoticeModal);
 
 // Define the visibility change handler as a named function
 async function handleVisibilityChange() {
@@ -22,6 +27,12 @@ async function handleVisibilityChange() {
 onMounted(() => {
   // Add event listener with the named function
   document.addEventListener('visibilitychange', handleVisibilityChange);
+
+  // Show notice popup if applicable
+  if (shouldShowPopup.value && notice.value) {
+    noticeModal.open({ data: notice.value });
+    markAsSeen();
+  }
 });
 
 // Store the function reference to be removed later
