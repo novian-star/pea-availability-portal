@@ -21,6 +21,9 @@ export const notice = pgTable('notice', {
   // Whether the notice is enabled/active
   isEnabled: boolean('is_enabled').notNull().default(false),
 
+  // Whether to show the notice in the top banner
+  showInBanner: boolean('show_in_banner').notNull().default(false),
+
   // Updated at timestamp (used to track notice changes for sessionStorage)
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

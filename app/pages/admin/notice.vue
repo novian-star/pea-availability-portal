@@ -16,6 +16,7 @@ async function handleManageClick() {
           title: notice.value.title,
           content: notice.value.content,
           isEnabled: notice.value.isEnabled,
+          showInBanner: notice.value.showInBanner,
         }
       : null,
   });
@@ -45,6 +46,9 @@ async function handleManageClick() {
           :variant="notice.isEnabled ? 'solid' : 'outline'"
         >
           {{ notice.isEnabled ? 'เปิดใช้งาน' : 'ปิดใช้งาน' }}
+        </UBadge>
+        <UBadge v-if="notice.showInBanner" color="neutral">
+          แสดงในแบนเนอร์
         </UBadge>
         <span class="text-sm text-muted-foreground">
           อัปเดตล่าสุด: {{ new Date(notice.updatedAt).toLocaleString('th-TH') }}

@@ -1,0 +1,1 @@
+ALTER TABLE "notice" ADD COLUMN "show_in_banner" boolean DEFAULT false NOT NULL;

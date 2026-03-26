@@ -23,6 +23,7 @@ export default defineEventHandler({
           title: notice.title,
           content: notice.content,
           isEnabled: notice.isEnabled,
+          showInBanner: notice.showInBanner,
           updatedAt: notice.updatedAt.toISOString(),
         },
       };

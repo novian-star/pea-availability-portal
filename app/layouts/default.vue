@@ -3,7 +3,13 @@ import NoticeModal from '~/components/NoticeModal.vue';
 
 const userSession = useUserSession();
 
-const { notice, shouldShowPopup, markAsSeen } = useNotice();
+const {
+  notice,
+  shouldShowPopup,
+  shouldShowInBanner,
+  truncateContent,
+  markAsSeen,
+} = useNotice();
 const noticeModal = useOverlay().create(NoticeModal);
 
 // Define the visibility change handler as a named function
@@ -21,6 +27,12 @@ async function handleVisibilityChange() {
       // Consider redirecting to login or showing an error message
       navigateTo('/login');
     }
+  }
+}
+
+function openNoticeModal() {
+  if (notice.value) {
+    noticeModal.open({ data: notice.value });
   }
 }
 
@@ -42,8 +54,10 @@ onUnmounted(() => {
 
 const runtimeConfig = useRuntimeConfig();
 
-const bannerMessage = runtimeConfig.public.bannerMessage;
-const bannerType = (() => {
+// DEPRECATED: Environment-based banner (fallback for backward compatibility)
+// Use the notice system instead via admin panel
+const legacyBannerMessage = runtimeConfig.public.bannerMessage;
+const legacyBannerType = (() => {
   switch (runtimeConfig.public.bannerType) {
     case 'info':
     case 'warning':
@@ -53,11 +67,40 @@ const bannerType = (() => {
       return 'neutral';
   }
 })();
+
+// Notice-based banner takes precedence over legacy env-based banner
+const showLegacyBanner = computed(
+  () => !shouldShowInBanner.value && !!legacyBannerMessage,
+);
+
+const bannerContent = computed(() => {
+  if (!notice.value) return '';
+  const truncated = truncateContent(notice.value.content, 120);
+  return `${notice.value.title}: ${truncated}`;
+});
 </script>
 
 <template>
   <div>
-    <UBanner v-if="bannerMessage" :color="bannerType" :title="bannerMessage" />
+    <!-- Notice-based banner (new system) -->
+    <UBanner v-if="shouldShowInBanner && notice" color="neutral">
+      <template #title>
+        <div class="flex items-center gap-2">
+          <span>{{ bannerContent }}</span>
+          <UButton size="xs" variant="outline" @click="openNoticeModal">
+            ดูเพิ่มเติม
+          </UButton>
+        </div>
+      </template>
+    </UBanner>
+
+    <!-- Legacy env-based banner (deprecated, fallback only) -->
+    <UBanner
+      v-else-if="showLegacyBanner"
+      :color="legacyBannerType"
+      :title="legacyBannerMessage"
+    />
+
     <ApplicationBar />
     <slot />
   </div>

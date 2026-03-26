@@ -31,6 +31,8 @@ export default defineNuxtConfig({
     authenticationAppsScriptKey: process.env.AUTHENTICATION_APPS_SCRIPT_KEY,
 
     public: {
+      // DEPRECATED: Use the notice system in admin panel instead
+      // These environment variables are kept for backward compatibility only
       bannerMessage: process.env.BANNER_MESSAGE,
       bannerType: process.env.BANNER_TYPE,
     },

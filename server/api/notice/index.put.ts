@@ -62,6 +62,7 @@ export default defineEventHandler({
             title: body.title,
             content: body.content,
             isEnabled: body.isEnabled,
+            showInBanner: body.showInBanner,
             updatedAt: new Date(),
           })
           .returning();
@@ -73,6 +74,7 @@ export default defineEventHandler({
             title: body.title,
             content: body.content,
             isEnabled: body.isEnabled,
+            showInBanner: body.showInBanner,
             updatedAt: new Date(),
           })
           .where(eq(schemas.notice.id, notices[0].id))
@@ -90,6 +92,7 @@ export default defineEventHandler({
           title: notice.title,
           content: notice.content,
           isEnabled: notice.isEnabled,
+          showInBanner: notice.showInBanner,
           updatedAt: notice.updatedAt.toISOString(),
         },
       };

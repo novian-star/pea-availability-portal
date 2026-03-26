@@ -10,6 +10,7 @@ const props = defineProps<{
     title: string | null;
     content: string | null;
     isEnabled: boolean;
+    showInBanner: boolean;
   } | null;
 }>();
 
@@ -24,6 +25,7 @@ const state = reactive<v.InferInput<typeof schema>>({
   title: props.data?.title || '',
   content: props.data?.content || '',
   isEnabled: props.data?.isEnabled || false,
+  showInBanner: props.data?.showInBanner || false,
 });
 
 const isSubmitting = ref(false);
@@ -109,13 +111,17 @@ async function handleSubmit(
             />
           </UFormField>
 
-          <UFormField label="สถานะ" name="isEnabled">
-            <UCheckbox
-              v-model="state.isEnabled"
-              color="neutral"
-              label="เปิดใช้งานประกาศ"
-            />
-          </UFormField>
+          <UCheckbox
+            v-model="state.isEnabled"
+            color="neutral"
+            label="เปิดใช้งานประกาศ"
+          />
+
+          <UCheckbox
+            v-model="state.showInBanner"
+            color="neutral"
+            label="แสดงประกาศในแบนเนอร์ด้านบน"
+          />
         </div>
       </UForm>
     </template>

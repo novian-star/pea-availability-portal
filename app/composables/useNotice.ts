@@ -4,6 +4,7 @@ type NoticeResponse = {
     title: string | null;
     content: string | null;
     isEnabled: boolean;
+    showInBanner: boolean;
     updatedAt: string;
   } | null;
 };
@@ -17,6 +18,24 @@ export const useNotice = () => {
   const noticeData = computed(() => notice.value?.data || null);
 
   const isEnabled = computed(() => noticeData.value?.isEnabled || false);
+
+  const showInBanner = computed(() => noticeData.value?.showInBanner || false);
+
+  const shouldShowInBanner = computed(() => {
+    return isEnabled.value && showInBanner.value && noticeData.value;
+  });
+
+  const truncateContent = (content: string | null, maxLength: number = 120): string => {
+    if (!content) return '';
+    if (content.length <= maxLength) return content;
+    return content.substring(0, maxLength).trim() + '...';
+  };
+
+  const bannerMessage = computed(() => {
+    if (!shouldShowInBanner.value || !noticeData.value) return null;
+    const truncated = truncateContent(noticeData.value.content);
+    return `${noticeData.value.title}: ${truncated}`;
+  });
 
   const shouldShowPopup = computed(() => {
     if (!import.meta.client) return false;
@@ -42,7 +61,11 @@ export const useNotice = () => {
   return {
     notice: noticeData,
     isEnabled,
+    showInBanner,
+    shouldShowInBanner,
     shouldShowPopup,
+    bannerMessage,
+    truncateContent,
     markAsSeen,
     refresh,
   };
