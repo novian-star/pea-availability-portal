@@ -14,11 +14,11 @@ export default defineEventHandler({
 			const result = await Promise.all([
 				sheets.spreadsheets.values.get({
 					spreadsheetId: equipmentsSheetId,
-					range: "'AVA PEA FRTU'!A1:E",
+          range: "'% AVA PEA FRTU'!A1:E",
 				}),
 				sheets.spreadsheets.values.get({
 					spreadsheetId: equipmentsSheetId,
-					range: "'AVA PEA SUB'!A1:E",
+          range: "'% AVA PEA SUB'!A1:E",
 				}),
 				sheets.spreadsheets.values.get({
 					spreadsheetId: equipmentsSheetId,
