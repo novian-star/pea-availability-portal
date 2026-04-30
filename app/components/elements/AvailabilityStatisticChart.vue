@@ -9,15 +9,12 @@ import {
 
 type Statistic = NonNullable<typeof statistics.value>[number];
 
-const timestamp = ref<Date | null>(null);
+const { data: timestamp } = await useTimestamp();
 
 const { data: statistics } = await useAsyncData(async () => {
   const requestFetch = useRequestFetch();
 
-  const { data: statistics, timestamp: fetchedTimestamp } = await requestFetch(
-    '/api/statistics'
-  );
-  timestamp.value = new Date(fetchedTimestamp);
+  const { data: statistics } = await requestFetch('/api/statistics');
 
   const orders = ['C', 'N', 'NE', 'S'];
   return statistics.sort((a, b) => {
@@ -124,8 +121,17 @@ const triggers = {
       </ul>
     </div>
     <div class="self-end">
-      <p class="text-end text-xs text-muted">
-        ข้อมูล ณ เวลา: {{ timestamp?.toLocaleString('th-TH') }}
+      <p v-if="timestamp" class="text-end text-xs text-muted">
+        ข้อมูล ณ เวลา:
+        <NuxtTime
+          :datetime="timestamp"
+          year="numeric"
+          month="2-digit"
+          day="2-digit"
+          hour="2-digit"
+          minute="2-digit"
+          locale="th"
+        />
       </p>
     </div>
   </div>

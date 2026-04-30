@@ -10,22 +10,23 @@ const toast = useToast();
 
 const userSession = useUserSession();
 
-const timestamp = ref(String(Date.now()));
+const { data: timestamp } = await useTimestamp();
 
 const { data: services } = await useAsyncData('services', async () => {
+  const requestFetch = useRequestFetch();
+
   const result = await Promise.all([
-    useRequestFetch()('/api/services'),
-    useRequestFetch()('/api/statistics/equipments'),
+    requestFetch('/api/services'),
+    requestFetch('/api/statistics/equipments'),
   ]);
 
   const services = result[0].data;
   const equipmentStatistics = result[1].data;
-  timestamp.value = result[1].timestamp || String(Date.now());
 
   const data = services.map((service) => {
     if (equipmentStatistics) {
       const equipmentData = equipmentStatistics.find((item) =>
-        service.name.startsWith(item.region)
+        service.name.startsWith(item.region),
       );
       return {
         ...service,
@@ -46,7 +47,7 @@ const deleteModal = overlay.create(LazyDeleteServiceModel);
  * This considered that user is an admin.
  */
 function createDropdownItems(
-  service: NonNullable<typeof services.value>[number]
+  service: NonNullable<typeof services.value>[number],
 ): DropdownMenuItem[][] {
   const items: DropdownMenuItem[][] = [];
 
@@ -305,8 +306,17 @@ const equipmentColor = (n: number) => {
         </ul>
       </template>
       <div class="py-4">
-        <p class="text-end text-xs text-muted">
-          ข้อมูล ณ เวลา: {{ new Date(timestamp).toLocaleString('th-TH') }}
+        <p v-if="timestamp" class="text-end text-xs text-muted">
+          ข้อมูล ณ เวลา:
+          <NuxtTime
+            :datetime="timestamp"
+            year="numeric"
+            month="2-digit"
+            day="2-digit"
+            hour="2-digit"
+            minute="2-digit"
+            locale="th"
+          />
         </p>
       </div>
     </div>
