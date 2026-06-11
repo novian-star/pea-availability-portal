@@ -12,12 +12,25 @@ export class SheetService {
 
     const sheetName = region.toUpperCase();
 
-    const response = await this.sheets.spreadsheets.values.get({
-      spreadsheetId: frtuSheetId,
+    const strategies = [
+      {
+        region: 'DEFAULT',
       range: `${sheetName}!A2:H`,
-    });
-
-    const headers = [
+        headers: [
+          'Site ID',
+          'รหัสสั่งการ',
+          'State SCADA',
+          'ชนิดอุปกรณ์',
+          'ระยะเวลา Down ครั้งล่าสุด',
+          'การไฟฟ้า',
+          'สถานที่',
+          'ข้อมูล ณ วันที่-เวลา',
+        ] as const,
+      },
+      {
+        region: 'S3',
+        range: `${sheetName}!A2:I`,
+        headers: [
       'Site ID',
       'รหัสสั่งการ',
       'State SCADA',
@@ -26,7 +39,20 @@ export class SheetService {
       'การไฟฟ้า',
       'สถานที่',
       'ข้อมูล ณ วันที่-เวลา',
-    ] as const;
+          'อุปกรณ์ที่มี FLISR',
+        ] as const,
+      },
+    ];
+
+    const strategy =
+      strategies.find((s) => s.region === region.toUpperCase()) ||
+      strategies[0];
+
+    const response = await this.sheets.spreadsheets.values.get({
+      spreadsheetId: frtuSheetId,
+      range: strategy.range,
+    });
+
 
     const data =
       response.data.values?.map((row) => ({
