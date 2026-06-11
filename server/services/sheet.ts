@@ -53,18 +53,19 @@ export class SheetService {
       range: strategy.range,
     });
 
+    const headers = strategy.headers;
 
     const data =
-      response.data.values?.map((row) => ({
-        [headers[0]]: String(row[0]),
-        [headers[1]]: String(row[1]),
-        [headers[2]]: String(row[2]),
-        [headers[3]]: String(row[3]),
-        [headers[4]]: String(row[4]),
-        [headers[5]]: String(row[5]),
-        [headers[6]]: String(row[6]),
-        [headers[7]]: String(row[7]),
-      })) || [];
+      response.data.values?.map((row) => {
+        const keys = headers;
+        const obj: Record<string, string> = {};
+
+        keys.forEach((key, index) => {
+          obj[key] = String(row[index] || '');
+        });
+
+        return obj;
+      }) || [];
 
     return data;
   }
@@ -91,13 +92,16 @@ export class SheetService {
     ] as const;
 
     const data =
-      response.data.values?.map((row) => ({
-        [headers[0]]: String(row[0]),
-        [headers[1]]: String(row[1]),
-        [headers[2]]: String(row[2]),
-        [headers[3]]: String(row[3]),
-        [headers[4]]: String(row[4]),
-      })) || [];
+      response.data.values?.map((row) => {
+        const keys = headers;
+        const obj: Record<string, string> = {};
+
+        keys.forEach((key, index) => {
+          obj[key] = String(row[index] || '');
+        });
+
+        return obj;
+      }) || [];
 
     return data;
   }
