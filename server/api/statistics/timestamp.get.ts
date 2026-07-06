@@ -30,7 +30,7 @@ export default defineEventHandler({
       }
     },
     {
-      maxAge: 5 * 60, // Cache for 5 minutes
+      maxAge: 1 * 60, // Cache for 1 minute
     },
   ),
 });
