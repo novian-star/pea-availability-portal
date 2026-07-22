@@ -29,8 +29,5 @@ export default defineEventHandler({
         });
       }
     },
-    {
-      maxAge: 1 * 60, // Cache for 1 minute
-    },
   ),
 });
