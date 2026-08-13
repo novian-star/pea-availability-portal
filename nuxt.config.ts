@@ -35,6 +35,8 @@ export default defineNuxtConfig({
       // These environment variables are kept for backward compatibility only
       bannerMessage: process.env.BANNER_MESSAGE,
       bannerType: process.env.BANNER_TYPE,
+
+      scadaInsightAiUrl: process.env.SCADA_INSIGHT_AI_URL,
     },
   },
 

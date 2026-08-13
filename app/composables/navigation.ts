@@ -1,6 +1,8 @@
 import type { NavigationMenuItem } from '#ui/types';
 
 export function useNavigation() {
+  const config = useRuntimeConfig();
+
   const userSession = useUserSession();
 
   const items = computed<NavigationMenuItem[][]>(() => {
@@ -28,6 +30,25 @@ export function useNavigation() {
         },
       ],
     ];
+
+    // Check and set SCADA Insight AI URL
+    if (config.public?.scadaInsightAiUrl) {
+      try {
+        const url = new URL(config.public.scadaInsightAiUrl);
+
+        items.push([
+          {
+            label: 'SCADA Insight AI',
+            icon: 'lucide:astroid',
+            external: true,
+            target: '_blank',
+            to: url.toString(),
+          },
+        ]);
+      } catch {
+        // Pass
+      }
+    }
 
     if (userSession.user.value?.isAdmin) {
       items.push([
