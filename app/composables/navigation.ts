@@ -39,7 +39,7 @@ export function useNavigation() {
         items.push([
           {
             label: 'SCADA Insight AI',
-            icon: 'lucide:astroid',
+            icon: 'lucide:brain',
             external: true,
             target: '_blank',
             to: url.toString(),
