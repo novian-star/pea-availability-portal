@@ -69,6 +69,39 @@ const columns: TableColumn<NonNullable<typeof users.value>[number]>[] = [
 	},
 ];
 
+
+const isDownloading = ref(false);
+
+async function handleDownload() {
+  isDownloading.value = true;
+
+  try {
+    const data = await $fetch('/api/users/export', {
+      responseType: 'blob',
+    });
+
+    const eleLink = document.createElement('a');
+    eleLink.download = 'users.csv';
+    eleLink.style.display = 'none';
+    const blob = data as Blob;
+    eleLink.href = URL.createObjectURL(blob);
+    document.body.appendChild(eleLink);
+    eleLink.click();
+    URL.revokeObjectURL(eleLink.href);
+    document.body.removeChild(eleLink);
+  } catch (error) {
+    console.error('Download error:', error);
+
+    toast.add({
+      title: 'เกิดข้อผิดพลาด',
+      description: 'ไม่สามารถดาวน์โหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+      color: 'error',
+    });
+  } finally {
+    isDownloading.value = false;
+  }
+}
+
 function createDropdownMenuItems(
 	user: NonNullable<typeof users.value>[number]
 ): DropdownMenuItem[] {
@@ -141,6 +174,15 @@ async function handleDropdownAction(
 		<header class="flex items-center h-16 px-4 gap-2">
 			<UIcon class="w-5 h-5" name="lucide:users" />
 			<h1>ผู้ใช้งาน</h1>
+			<UTooltip text="ดาวน์โหลดข้อมูลผู้ใช้">
+        <UButton
+          class="ms-auto"
+          icon="lucide:download"
+          variant="ghost"
+          :loading="isDownloading"
+          @click="handleDownload"
+        />
+      </UTooltip>
 		</header>
 		<main>
 			<div>
