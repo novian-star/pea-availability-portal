@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { version } from '~~/package.json';
+
 const emit = defineEmits<{
   close: [];
 }>();
@@ -30,7 +32,7 @@ watch(
         class="flex items-center justify-between h-16 px-4 text-sm text-muted"
       >
         <p>พัฒนาโดย ผจศ.กปบ.(น3)</p>
-        <p>Version 5.2.0</p>
+        <p>Version {{ version }}</p>
       </footer>
     </template>
   </USlideover>

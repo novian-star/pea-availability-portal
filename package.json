@@ -1,5 +1,6 @@
 {
   "name": "pea-ava-portal",
+  "version": "5.3.0",
   "private": true,
   "type": "module",
   "scripts": {
